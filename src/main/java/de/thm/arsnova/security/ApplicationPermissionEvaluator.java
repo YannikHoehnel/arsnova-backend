@@ -226,8 +226,12 @@ public class ApplicationPermissionEvaluator implements PermissionEvaluator {
 					return true;
 				}
 				room = roomRepository.findOne(targetMotd.getRoomId());
+				if (room == null) {
+					return false;
+				}
 
-				return room != null && !room.isClosed() || room.getOwnerId().equals(userId);
+				if (room.getOwnerId() == null) throw new RuntimeException("error: ownerId can't be null");
+				return !room.isClosed() || room.getOwnerId().equals(userId);
 			default:
 				return false;
 		}
